@@ -15,4 +15,8 @@ Compress-TinyImage ".\panda.jpg" | Get-TinyImage ".\pandasmall.jpg" -ResizeMode 
 ```
 
 ## Install
-tbd
+
+Install it form the Powershell Gallery:
+```
+Install-Module -Name TinyImagePS -AllowPrerelease
+```

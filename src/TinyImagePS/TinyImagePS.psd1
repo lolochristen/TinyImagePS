@@ -101,7 +101,7 @@ PrivateData = @{
         # LicenseUri = ''
 
         # A URL to the main website for this project.
-        ProjectUri = 'https://www.github.com/...'
+        ProjectUri = 'https://github.com/lolochristen/TinyImagePS'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -110,7 +110,7 @@ PrivateData = @{
         # ReleaseNotes = ''
 
         # Prerelease string of this module
-        Prerelease = 'prerelease-0.0.1'
+        Prerelease = 'prerelease1'
 
         # Flag to indicate whether the module requires explicit user acceptance for install/update/save
         # RequireLicenseAcceptance = $false
