@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyImagePS", "src\TinyImagePS\TinyImagePS.csproj", "{9B602CC8-274C-42F1-A1AB-68D00581C339}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9B602CC8-274C-42F1-A1AB-68D00581C339}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B602CC8-274C-42F1-A1AB-68D00581C339}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B602CC8-274C-42F1-A1AB-68D00581C339}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B602CC8-274C-42F1-A1AB-68D00581C339}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8E066A51-B0BE-473A-8C0C-1A9285B8CDBD}
+	EndGlobalSection
+EndGlobal
