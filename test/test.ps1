@@ -5,12 +5,16 @@ $testimagepath = "..\..\..\..\..\test"
 #$ApiKey = "tbd"
 #Set-TinyImageApiKey $ApiKey
 
-Get-ChildItem "$testimagepath\*.*" -exclude *.ps1 | Compress-TinyImage -Verbose | Get-TinyImage "$($_.Source.Name).out"
+Get-ChildItem "$testimagepath\*.*" -exclude *.ps1 | Compress-TinyImage -Verbose | Get-TinyImage ".\"
+
+Compress-TinyImage "$testimagepath\panda.jpg" ".\"
+
+Compress-TinyImage "$testimagepath\*.*" ".\" -Verbose -Force
 
 Compress-TinyImage "$testimagepath\panda.jpg" -Verbose | ft
 Compress-TinyImage "$testimagepath\panda.jpg" -Verbose | fl
 
-Read-Host -Prompt "Press any key to continue"
+Compress-TinyImage "$testimagepath\panda.jpg" -Destination pandas2.jpg -Force -Verbose
 
 Compress-TinyImage "$testimagepath\panda.jpg" ".\pandasmall.jpg" -Force -Verbose
 Compress-TinyImage "$testimagepath\panda.jpg" -Verbose | Get-TinyImage ".\pandasmall1.jpg" -Force -Verbose

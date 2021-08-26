@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>TinyImagePS</AssemblyName>
+    <Version>0.0.2</Version>
+	<Authors>Laurent Christen</Authors>
   </PropertyGroup>
 
   <ItemGroup>

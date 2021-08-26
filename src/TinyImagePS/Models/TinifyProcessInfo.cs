@@ -8,11 +8,11 @@ namespace TinyImagePS.Models
 {
     public class TinifyProcessInfo
     {
-        public TinifyProcessInfo(TinifyResponse response, string fileName)
+        public TinifyProcessInfo(TinifyResponse response, FileSystemInfo sourceFileInfo)
         {
             Input = response.Input;
             Output = response.Output;
-            Source = new FileInfo(fileName);
+            Source = sourceFileInfo;
         }
 
         public FileSystemInfo Source { get; set; } 

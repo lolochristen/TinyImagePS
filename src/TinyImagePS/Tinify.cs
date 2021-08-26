@@ -38,9 +38,23 @@ namespace TinyImagePS
             };
         }
 
-        public async Task<TinifyResponse> Shrink(Stream sourceFile)
+        public TinifyResponse Shrink(Stream stream)
         {
-            var response = await _httpClient.PostAsync("shrink", new StreamContent(sourceFile));
+            var task = ShrinkAsync(stream);
+            task.Wait();
+            return task.Result;
+        }
+
+        public TinifyResponse Shrink(string filePath)
+        {
+            var task = ShrinkAsync(filePath);
+            task.Wait();
+            return task.Result;
+        }
+
+        public async Task<TinifyResponse> ShrinkAsync(Stream stream)
+        {
+            var response = await _httpClient.PostAsync("shrink", new StreamContent(stream));
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<TinifyResponse>(_serializerOptions);
@@ -50,7 +64,7 @@ namespace TinyImagePS
             throw new TinifyException($"{error.Error}: {error.Message}");
         }
 
-        public async Task<TinifyResponse> Shrink(Uri sourceUrl)
+        public async Task<TinifyResponse> ShrinkAsync(Uri sourceUrl)
         {
             var response = await _httpClient.PostAsJsonAsync("shrink",
                 new TinifyRequest { Source = new TinifyUrl { Url = sourceUrl.ToString() } });
@@ -63,22 +77,35 @@ namespace TinyImagePS
             throw new TinifyException($"{error.Error}: {error.Message}");
         }
 
-        public async Task<TinifyResponse> Shrink(string sourceFilePath)
+        public async Task<TinifyResponse> ShrinkAsync(string filePath)
         {
-            using (var fs = File.OpenRead(sourceFilePath))
+            using (var fs = File.OpenRead(filePath))
             {
-                return await Shrink(fs);
+                return await ShrinkAsync(fs);
             }
         }
 
-        public async Task<Stream> GetStream(TinifyResponseOutput output)
+        public Stream GetStream(TinifyResponseOutput output)
+        {
+            var task = GetStreamAsync(output);
+            task.Wait();
+            return task.Result;
+        }
+
+        public async Task<Stream> GetStreamAsync(TinifyResponseOutput output)
         {
             return await _httpClient.GetStreamAsync(output.Url);
         }
 
-        public async Task DownloadFile(TinifyResponseOutput output, string targetPath)
+        public void DownloadFile(TinifyResponseOutput output, string targetPath)
         {
-            using (var stream = await GetStream(output))
+            var task = DownloadFileAsync(output, targetPath);
+            task.Wait();
+        }
+
+        public async Task DownloadFileAsync(TinifyResponseOutput output, string targetPath)
+        {
+            using (var stream = await GetStreamAsync(output))
             {
                 using (var fs = File.Open(targetPath, FileMode.Create, FileAccess.Write))
                 {
@@ -87,7 +114,14 @@ namespace TinyImagePS
             }
         }
 
-        public async Task<Stream> Resize(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height)
+        public Stream Resize(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height)
+        {
+            var task = ResizeAsync(output, resizeMode, width, height);
+            task.Wait();
+            return task.Result;
+        }
+
+        public async Task<Stream> ResizeAsync(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height)
         {
             var options = new TinifyOptions
             {
@@ -99,15 +133,16 @@ namespace TinyImagePS
                 }
             };
 
-            return await Resize(output, options);
+            return await ResizeAsync(output, options);
         }
 
-        public async Task<Stream> Resize(TinifyResponseOutput output, TinifyOptions options)
+
+        public async Task<Stream> ResizeAsync(TinifyResponseOutput output, TinifyOptions options)
         {
-            return await Resize(output.Url, options);
+            return await ResizeAsync(output.Url, options);
         }
 
-        public async Task<Stream> Resize(string url, TinifyOptions options)
+        public async Task<Stream> ResizeAsync(string url, TinifyOptions options)
         {
             var resizeResponse = await _httpClient.PostAsJsonAsync(url, options, _serializerOptions);
             if (resizeResponse.IsSuccessStatusCode)
@@ -119,7 +154,13 @@ namespace TinyImagePS
             throw new TinifyException($"{error.Error}: {error.Message}");
         }
 
-        public async Task Resize(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height,
+        public void Resize(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height, string targetPath)
+        {
+            var task = ResizeAsync(output, resizeMode, width, height, targetPath);
+            task.Wait();
+        }
+
+        public async Task ResizeAsync(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height,
             string targetPath)
         {
             var options = new TinifyOptions
@@ -132,7 +173,7 @@ namespace TinyImagePS
                 }
             };
 
-            using (var stream = await Resize(output, resizeMode, width, height))
+            using (var stream = await ResizeAsync(output, resizeMode, width, height))
             {
                 using (var fs = File.Open(targetPath, FileMode.Create, FileAccess.Write))
                 {
