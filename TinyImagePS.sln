@@ -5,6 +5,15 @@ VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TinyImagePS", "src\TinyImagePS\TinyImagePS.csproj", "{9B602CC8-274C-42F1-A1AB-68D00581C339}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{31EE969D-1554-4123-B919-7DFF8A7F6769}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{37E439CD-EEBD-4E0C-B583-E1F62A74DEDD}"
+	ProjectSection(SolutionItems) = preProject
+		test\monkey.png = test\monkey.png
+		test\panda.jpg = test\panda.jpg
+		test\test.ps1 = test\test.ps1
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +27,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9B602CC8-274C-42F1-A1AB-68D00581C339} = {31EE969D-1554-4123-B919-7DFF8A7F6769}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8E066A51-B0BE-473A-8C0C-1A9285B8CDBD}

@@ -1,17 +1,19 @@
 ﻿using System;
 using System.IO;
 using System.Management.Automation;
+using System.Threading.Tasks;
 using TinyImagePS.Models;
 
 namespace TinyImagePS
 {
     [Cmdlet(VerbsData.Compress, "TinyImage")]
-    [OutputType(typeof(TinifyResponse))]
-    public class CompressTinyImageCmdlet : PSCmdlet
+    [OutputType(typeof(TinifyProcessInfo))]
+    public class CompressTinyImageCmdlet : AsyncCmdlet
     {
         [Parameter(
             Mandatory = true,
             Position = 0,
+            ValueFromPipeline = true,
             ValueFromPipelineByPropertyName = true
         )]
         public string[] Path { get; set; }
@@ -32,7 +34,7 @@ namespace TinyImagePS
 
         [Parameter] public SwitchParameter Replace { get; set; }
 
-        protected override void ProcessRecord()
+        protected override async Task ProcessRecordAsync()
         {
             if (string.IsNullOrWhiteSpace(ApiKey))
                 try
@@ -49,10 +51,11 @@ namespace TinyImagePS
             var tinify = new TinifyApi(ApiKey);
 
             foreach (var path in Path)
+            {
                 try
                 {
-                    var task = tinify.Shrink(path);
-                    var response = task.Result;
+                    WriteVerbose($"Tinyfy {path}");
+                    var response = await tinify.Shrink(path);
 
                     if (Replace)
                     {
@@ -60,10 +63,12 @@ namespace TinyImagePS
                         Force = true;
                     }
 
+                    WriteVerbose($"Tinify successfull: Input:{response.Input} Output:{response.Output}");
+
                     if (string.IsNullOrEmpty(DestinationPath))
                     {
                         // to pipeline
-                        WriteObject(response);
+                        WriteObject(new TinifyProcessInfo(response, path));
                     }
                     else
                     {
@@ -76,8 +81,10 @@ namespace TinyImagePS
                             continue;
                         }
 
+                        WriteVerbose($"Download to {DestinationPath}");
+
                         // to file
-                        tinify.DownloadFile(task.Result, DestinationPath).Wait();
+                        await tinify.DownloadFile(response.Output, DestinationPath);
                     }
                 }
                 catch (TinifyException exception)
@@ -90,25 +97,7 @@ namespace TinyImagePS
                         new TinifyException("Exception: " + exception.Message, exception)
                             .CreateErrorRecord("Exception"));
                 }
-        }
-    }
-
-    public class TinifyException : Exception
-    {
-        public TinifyException(string message) : base(message)
-        {
-        }
-
-        public TinifyException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        internal ErrorRecord CreateErrorRecord(string errorId = null,
-            ErrorCategory errorCategory = ErrorCategory.NotSpecified, object targetObject = null)
-        {
-            var errorRecord = new ErrorRecord(this, errorId, errorCategory, targetObject);
-            errorRecord.ErrorDetails = new ErrorDetails("TinyImage Error: " + Message);
-            return errorRecord;
+            }
         }
     }
 }

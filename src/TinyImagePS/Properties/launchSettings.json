@@ -3,7 +3,7 @@
     "TinyPngPS": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
-      "commandLineArgs": "-f .\\test.ps1"
+      "commandLineArgs": "-f ..\\..\\..\\..\\..\\test\\test.ps1"
     }
   }
 }

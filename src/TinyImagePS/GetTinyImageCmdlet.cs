@@ -1,19 +1,20 @@
 ﻿using System;
 using System.IO;
 using System.Management.Automation;
+using System.Threading.Tasks;
 using TinyImagePS.Models;
 
 namespace TinyImagePS
 {
     [Cmdlet(VerbsCommon.Get, "TinyImage")]
-    public class GetTinyImageCmdlet : PSCmdlet
+    public class GetTinyImageCmdlet : AsyncCmdlet
     {
         [Parameter(
             Mandatory = true,
             ValueFromPipelineByPropertyName = true,
             ValueFromPipeline = true
         )]
-        public TinifyResponse ResponseObject { get; set; }
+        public TinifyProcessInfo ProcessObject { get; set; }
 
         [Parameter(
             Position = 0,
@@ -41,7 +42,7 @@ namespace TinyImagePS
         )]
         public string ApiKey { get; set; }
 
-        protected override void ProcessRecord()
+        protected override async Task ProcessRecordAsync()
         {
             if (string.IsNullOrWhiteSpace(ApiKey))
                 try
@@ -63,49 +64,23 @@ namespace TinyImagePS
                 byte[] content;
 
                 if (ParameterSetName == "Resize")
-                    using (var stream = tinify.Resize(ResponseObject, ResizeMode, Width, Height).Result)
+                {
+                    WriteVerbose($"Resize operation: Url:{ProcessObject.Output.Url} Mode:{ResizeMode} Size:{Width}x{Height}");
+
+                    using (var stream = await tinify.Resize(ProcessObject.Output, ResizeMode, Width, Height))
                     {
                         content = new byte[stream.Length]; // read all in to memory ;-(
-                        stream.Write(content, 0, (int)stream.Length);
+                        await stream.WriteAsync(content, 0, (int)stream.Length);
                     }
-
-                //Task<Stream> task;
-                //switch (ResizeMode)
-                //{
-                //    case ResizeMode.Scale:
-                //        task = tinify.Scale(ResponseObject, Width, Height);
-                //        break;
-                //    case ResizeMode.Fit:
-                //        task = tinify.Fit(ResponseObject, Width, Height);
-                //        break;
-                //    case ResizeMode.Cover:
-                //        task = tinify.Cover(ResponseObject, Width, Height);
-                //        break;
-                //    case ResizeMode.Thumb:
-                //        task = tinify.Thumb(ResponseObject, Width, Height);
-                //        break;
-                //    default:
-                //        throw new ArgumentOutOfRangeException();
-                //}
-
-                //task.Wait();
-                //var stream = task.Result;
-                //try
-                //{
-                //    content = new byte[stream.Length]; // read all in to memory ;-(
-                //    task.Result.Write(content, 0, (int)stream.Length);
-                //}
-                //finally
-                //{
-                //    stream.Dispose();
-                //}
+                }
                 else
-                    using (var stream = tinify.GetStream(ResponseObject).Result)
+                {
+                    using (var stream = tinify.GetStream(ProcessObject.Output).Result)
                     {
                         content = new byte[stream.Length]; // read all in to memory ;-(
-                        stream.Write(content, 0, (int)stream.Length);
+                        await stream.WriteAsync(content, 0, (int)stream.Length);
                     }
-                //content = tinify.DownloadBytes(ResponseObject).Result;
+                }
 
                 if (AsByteStream.IsPresent)
                     WriteObject(content);
@@ -123,29 +98,13 @@ namespace TinyImagePS
                     return;
                 }
 
-                if (ParameterSetName == "Resize")
-                    tinify.Resize(ResponseObject, ResizeMode, Width, Height, DestinationPath).Wait();
+                WriteVerbose($"Resize operation: Url:{ProcessObject.Output.Url} Mode:{ResizeMode} Size:{Width}x{Height} to {DestinationPath}");
 
-                //switch (ResizeMode)
-                //{
-                //    case ResizeMode.Scale:
-                //        tinify.Scale(ResponseObject, Width, Height, DestinationPath).Wait();
-                //        break;
-                //    case ResizeMode.Fit:
-                //        tinify.Fit(ResponseObject, Width, Height, DestinationPath).Wait();
-                //        break;
-                //    case ResizeMode.Cover:
-                //        tinify.Cover(ResponseObject, Width, Height, DestinationPath).Wait();
-                //        break;
-                //    case ResizeMode.Thumb:
-                //        tinify.Thumb(ResponseObject, Width, Height, DestinationPath).Wait();
-                //        break;
-                //    default:
-                //        throw new ArgumentOutOfRangeException();
-                //}
+                if (ParameterSetName == "Resize")
+                    await tinify.Resize(ProcessObject.Output, ResizeMode, Width, Height, DestinationPath);
                 else
                     // to file
-                    tinify.DownloadFile(ResponseObject, DestinationPath).Wait();
+                    await tinify.DownloadFile(ProcessObject.Output, DestinationPath);
             }
         }
     }

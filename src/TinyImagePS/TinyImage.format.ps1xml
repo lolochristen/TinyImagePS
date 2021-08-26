@@ -2,14 +2,18 @@
 <Configuration>
 	<ViewDefinitions>
 		<View>
-			<Name>TinyImagePS.Models.TinifyResponse</Name>
+			<Name>TinyImage</Name>
 			<ViewSelectedBy>
-				<TypeName>TinyImagePS.Models.TinifyResponse</TypeName>
+				<TypeName>TinyImagePS.Models.TinifyProcessInfo</TypeName>
 			</ViewSelectedBy>
 			<ListControl>
 				<ListEntries>
 					<ListEntry>
 						<ListItems>
+							<ListItem>
+								<Label>Name</Label>
+								<ScriptBlock>$_.Source.Name</ScriptBlock>
+							</ListItem>
 							<ListItem>
 								<Label>Size</Label>
 								<ScriptBlock>$_.Output.Size</ScriptBlock>
@@ -37,12 +41,16 @@
 		</View>
 
 		<View>
-			<Name>TinyImagePS.Models.TinifyResponse</Name>
+			<Name>TinyImage</Name>
 			<ViewSelectedBy>
-				<TypeName>TinyImagePS.Models.TinifyResponse</TypeName>
+				<TypeName>TinyImagePS.Models.TinifyProcessInfo</TypeName>
 			</ViewSelectedBy>
 			<TableControl>
 				<TableHeaders>
+					<TableColumnHeader>
+						<Width>30</Width>
+						<Label>Name</Label>
+					</TableColumnHeader>
 					<TableColumnHeader>
 						<Width>10</Width>
 						<Label>Size</Label>
@@ -67,6 +75,9 @@
 				<TableRowEntries>
 					<TableRowEntry>
 						<TableColumnItems>
+							<TableColumnItem>
+								<ScriptBlock>$_.Source.Name</ScriptBlock>
+							</TableColumnItem>
 							<TableColumnItem>
 								<ScriptBlock>$_.Output.Size</ScriptBlock>
 							</TableColumnItem>

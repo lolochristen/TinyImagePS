@@ -24,25 +24,22 @@ namespace TinyImagePS
         {
             var path = GetApiKeyFile();
             using (var stream = File.OpenText(path))
-            {
                 return stream.ReadLine();
-            }
         }
 
         internal static void SetApiKeyToFile(string apiKey)
         {
             var path = GetApiKeyFile();
             Directory.CreateDirectory(Path.GetDirectoryName(path));
+
             using (var stream = File.CreateText(path))
-            {
                 stream.Write(apiKey);
-            }
         }
 
         internal static string GetApiKeyFile()
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-                ".tyniimage\\tinyimage.apikey");
+                $".tinify{Path.DirectorySeparatorChar}tinify.apikey");
         }
     }
 }

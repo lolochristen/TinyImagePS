@@ -71,14 +71,14 @@ namespace TinyImagePS
             }
         }
 
-        public async Task<Stream> GetStream(TinifyResponse tinifyResponse)
+        public async Task<Stream> GetStream(TinifyResponseOutput output)
         {
-            return await _httpClient.GetStreamAsync(tinifyResponse.Output.Url);
+            return await _httpClient.GetStreamAsync(output.Url);
         }
 
-        public async Task DownloadFile(TinifyResponse tinifyResponse, string targetPath)
+        public async Task DownloadFile(TinifyResponseOutput output, string targetPath)
         {
-            using (var stream = await GetStream(tinifyResponse))
+            using (var stream = await GetStream(output))
             {
                 using (var fs = File.Open(targetPath, FileMode.Create, FileAccess.Write))
                 {
@@ -87,7 +87,7 @@ namespace TinyImagePS
             }
         }
 
-        public async Task<Stream> Resize(TinifyResponse response, ResizeMode resizeMode, int? width, int? height)
+        public async Task<Stream> Resize(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height)
         {
             var options = new TinifyOptions
             {
@@ -99,12 +99,12 @@ namespace TinyImagePS
                 }
             };
 
-            return await Resize(response, options);
+            return await Resize(output, options);
         }
 
-        public async Task<Stream> Resize(TinifyResponse response, TinifyOptions options)
+        public async Task<Stream> Resize(TinifyResponseOutput output, TinifyOptions options)
         {
-            return await Resize(response.Output.Url, options);
+            return await Resize(output.Url, options);
         }
 
         public async Task<Stream> Resize(string url, TinifyOptions options)
@@ -119,7 +119,7 @@ namespace TinyImagePS
             throw new TinifyException($"{error.Error}: {error.Message}");
         }
 
-        public async Task Resize(TinifyResponse response, ResizeMode resizeMode, int? width, int? height,
+        public async Task Resize(TinifyResponseOutput output, ResizeMode resizeMode, int? width, int? height,
             string targetPath)
         {
             var options = new TinifyOptions
@@ -132,7 +132,7 @@ namespace TinyImagePS
                 }
             };
 
-            using (var stream = await Resize(response, resizeMode, width, height))
+            using (var stream = await Resize(output, resizeMode, width, height))
             {
                 using (var fs = File.Open(targetPath, FileMode.Create, FileAccess.Write))
                 {
